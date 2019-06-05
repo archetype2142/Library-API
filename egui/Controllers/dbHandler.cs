@@ -151,7 +151,7 @@ namespace egui.Controllers
             List<Book> bk = new List<Book>();
             while (reader.Read())
             {
-                bk.Add(new Book(Convert.ToString(reader["title"]), Convert.ToString(reader["author"]), Convert.ToInt32(reader["year"])));
+                bk.Add(new Book { Id = Convert.ToInt32(reader["Id"]), Title = (reader["Title"].ToString()), Author = (reader["Author"].ToString()), Year = Convert.ToInt32(reader["Year"]) });
             }
             return bk;
         }

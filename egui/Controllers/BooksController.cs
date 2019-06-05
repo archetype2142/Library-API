@@ -7,6 +7,7 @@ using egui.Models;
 using System.Web.Http;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -17,12 +18,11 @@ namespace egui.Controllers
     [Route("api/[controller]")]
     public class BooksController : Controller
     {
+
         // GET: api/books
         [HttpGet]
         public IEnumerable<Book> Get()
-        {
-
-            System.Diagnostics.Debug.WriteLine("yolo");
+        { 
             dbHandler db = new dbHandler();
             var output = db.LoadData();
             List<Book> bk = new List<Book>();
@@ -67,6 +67,18 @@ namespace egui.Controllers
         {
             dbHandler db = new dbHandler();
             db.DeleteRecord(id);
+        }
+
+        [HttpPost("Filter")]
+        public IEnumerable<Book> Filter([FromQuery]string author = "", string title = "", int year = 0)
+        {
+            dbHandler db = new dbHandler();
+            List<Book> bk = new List<Book>();
+            if (year == 0)
+                bk = db.loadFilters($"SELECT * FROM BOOK where LOWER(BOOK.Author) LIKE '%{author}%' AND LOWER(BOOK.Title) LIKE '%{title}%' ");
+            else
+                bk = db.loadFilters($"SELECT * FROM BOOK where LOWER(BOOK.Author) LIKE '%{author}%' AND LOWER(BOOK.Title) LIKE '%{title}%' AND Year='{year}'");
+            return bk;
         }
     }
 }
